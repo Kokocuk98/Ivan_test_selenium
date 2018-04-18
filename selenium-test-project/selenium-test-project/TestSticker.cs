@@ -28,11 +28,12 @@ namespace csharp_example
             //В цикле проверяем, что у каждой уточки не больше одного стикера
             for (int i = 0; i <= MenuCount - 1; i++)
             {
-                menu[i].FindElement(By.CssSelector(".sticker"));
+              //menu[i].FindElement(By.CssSelector(".sticker"));
                 int StickerCount = menu[i].FindElements(By.CssSelector(".sticker")).Count;
-                if (StickerCount > 1 || StickerCount < 1)
+                if (StickerCount > 1)
                     Assert.Fail("Больше одного стикера у уточки");
-
+                if (StickerCount < 1)
+                    Assert.Fail("Стикер отсутствует");
             }
         }
 
