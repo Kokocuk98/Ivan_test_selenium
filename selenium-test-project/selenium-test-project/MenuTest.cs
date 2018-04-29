@@ -1,10 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace csharp_example
 {
@@ -16,16 +13,6 @@ namespace csharp_example
     public void Start()
         {
             driver = new ChromeDriver();
-        }
-
-    [Login]
-    public void Login()
-        {
-            driver.Url = "http://localhost/litecart/admin";
-            driver.FindElement(By.Name("username")).SendKeys("admin");
-            driver.FindElement(By.Name("password")).SendKeys("admin");
-            driver.FindElement(By.Name("login")).Click();
-            driver.FindElement(By.ClassName("fa-sign-out")).Click();
         }
 
     [Test]
