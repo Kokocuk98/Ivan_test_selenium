@@ -18,12 +18,14 @@ namespace csharp_example
         [Test]
         public void TestSticker()
         {
-            //Заходим и логинимся
+            //Заходим в магазин
             driver.Url = "http://localhost/litecart/";
             
+            //Находим всех уточек на странице
             int MenuCount = driver.FindElements(By.XPath("//*[@class='product column shadow hover-light']")).Count;
             ReadOnlyCollection<IWebElement> menu = driver.FindElements(By.XPath("//*[@class='product column shadow hover-light']"));
 
+            //В цикле проверяем, что у каждой уточки не больше одного стикера
             for (int i = 0; i <= MenuCount - 1; i++)
             {
                 menu[i].FindElement(By.XPath(".//*[contains(@class, 'sticker sale') or contains(@class, 'sticker new')]"));
