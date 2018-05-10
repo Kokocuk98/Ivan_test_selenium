@@ -40,6 +40,7 @@ namespace csharp_example
                     template[n].Click();
                     driver.FindElement(By.XPath("//*[@id='content']/h1"));
                     template = driver.FindElements(By.XPath("//*[@class='docs']/li"));
+                    
                 }
                 menu = driver.FindElements(By.XPath("//*[@id='box-apps-menu']/li"));
             }

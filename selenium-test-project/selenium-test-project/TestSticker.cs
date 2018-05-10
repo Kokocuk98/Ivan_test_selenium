@@ -22,14 +22,14 @@ namespace csharp_example
             driver.Url = "http://localhost/litecart/";
             
             //Находим всех уточек на странице
-            int MenuCount = driver.FindElements(By.XPath("//*[@class='product column shadow hover-light']")).Count;
-            ReadOnlyCollection<IWebElement> menu = driver.FindElements(By.XPath("//*[@class='product column shadow hover-light']"));
+            int MenuCount = driver.FindElements(By.XPath("//*[@class='link']//*[contains(text(), 'Duck')]/..")).Count;
+            ReadOnlyCollection<IWebElement> menu = driver.FindElements(By.XPath("//*[@class='link']//*[contains(text(), 'Duck')]/.."));
 
             //В цикле проверяем, что у каждой уточки не больше одного стикера
             for (int i = 0; i <= MenuCount - 1; i++)
             {
                 menu[i].FindElement(By.XPath(".//*[contains(@class, 'sticker sale') or contains(@class, 'sticker new')]"));
-                int StickerCount = menu[i].FindElements(By.XPath("//*[contains(@class, 'sticker sale') or contains(@class, 'sticker new')]")).Count;
+                int StickerCount = menu[i].FindElements(By.XPath(".//*[contains(@class, 'sticker sale') or contains(@class, 'sticker new')]")).Count;
                 if (StickerCount > 1 || StickerCount < 1)
                     Assert.Fail("Больше одного стикера у уточки");
 
