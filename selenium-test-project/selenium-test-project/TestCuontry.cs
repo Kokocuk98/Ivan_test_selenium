@@ -47,8 +47,8 @@ namespace csharp_example
                     //Находим все регионы на странице
                     //Создаем 2 массива которые потом будут сравниваться
                     driver.FindElement(By.XPath("//*[@class='row'][" + i + "]/td[5]/a")).Click();
-                    int RegionCount = driver.FindElements(By.XPath("//*[@class='dataTable']/tbody/tr/td[3][text()]/..")).Count;
-                    ReadOnlyCollection<IWebElement> Region = driver.FindElements(By.XPath("//*[@class='dataTable']/tbody/tr/td[3][text()]/.."));
+                    int RegionCount = driver.FindElements(By.XPath("//*[@class='dataTable']//td[3][text()]/..")).Count;
+                    ReadOnlyCollection<IWebElement> Region = driver.FindElements(By.XPath("//*[@class='dataTable']//td[3][text()]/.."));
                     string[] Arr2 = new string[RegionCount];
                     string[] Arr3 = new string[RegionCount];
 
