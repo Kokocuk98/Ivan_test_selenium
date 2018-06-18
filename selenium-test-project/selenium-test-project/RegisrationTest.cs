@@ -21,7 +21,10 @@ namespace csharp_example
         public void TestReg()
 
         {
-            string i = "ivan_test1@test.com";
+            Random l = new Random();
+            int num = l.Next(0, 1000);
+
+            string i = "ivan_test" + num + "@test.com";
 
             driver.Url = "http://localhost/litecart/";
 
