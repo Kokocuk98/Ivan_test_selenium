@@ -23,60 +23,96 @@ namespace csharp_example
         {
             driver.Url = "http://localhost/litecart/";
 
-            string[] Arr1 = new string[5];
-            string[] Arr2 = new string[5];
-            string color = "rgba(119, 119, 119, 1)";
-            string color1 = "rgba(204, 0, 0, 1)";
-
-            //Получаем цвета и размеры цен
-            string regularPriceColor = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetCssValue("color");
-            string campaignPriceColor = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetCssValue("color");
-            string regularPriceSize = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetAttribute("offsetHeight");
-            string campaignPriceSize = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetAttribute("offsetHeight");
-            int i = Convert.ToInt32(regularPriceSize);
-            int j = Convert.ToInt32(campaignPriceSize);
+            string[] Arr1 = new string[3];
+            string[] Arr2 = new string[3];
+            int i;
+            int j;
+            string decoration;
+            string weight;
+            int r;
+            int g;
+            int b;
+            //проверяем цвет обычной цены и то, что она зачеркнута
+            string regularPriceColor = driver.FindElement(By.CssSelector("#box-campaigns s.regular-price")).GetCssValue("color");
+            string[] regularPriceChanel = regularPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+            r = Int32.Parse(regularPriceChanel[0].Trim());
+            g = Int32.Parse(regularPriceChanel[1].Trim());
+            b = Int32.Parse(regularPriceChanel[2].Trim());
+            decoration = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetCssValue("text-decoration-line");
+            if (r == g && g == b && decoration == "line-through")
+            {
+                //проверяем цвет акционной цены и то, что она выделена жирным
+                string campaignPriceColor = driver.FindElement(By.CssSelector("#box-campaigns strong.campaign-price")).GetCssValue("color");
+                string[] campaignPriceChanel = campaignPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+                r = Int32.Parse(campaignPriceChanel[0].Trim());
+                g = Int32.Parse(campaignPriceChanel[1].Trim());
+                b = Int32.Parse(campaignPriceChanel[2].Trim());
+                weight = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetCssValue("font-weight");
+                if (g == 0 && g == b && weight == "700")
+                {
+                    string regularPriceSize = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetAttribute("offsetHeight");
+                    string campaignPriceSize = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetAttribute("offsetHeight");
+                    i = Convert.ToInt32(regularPriceSize);
+                    j = Convert.ToInt32(campaignPriceSize);
+                    if (i > j)
+                    {
+                        Assert.Fail("Цвет/Размер некорректны");
+                    }
+                }
+            }
+            else
+            Assert.Fail("Цвет/Размер некорректны");
 
             //Записываем свойства товара в массив
             Arr1[0] = driver.FindElementByCssSelector("#box-campaigns div.name").GetAttribute("innerText");
             Arr1[1] = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetAttribute("innerText");
-            Arr1[2] = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetCssValue("text-decoration-line");
-            Arr1[3] = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetAttribute("innerText");
-            Arr1[4] = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetCssValue("font-weight");
+            Arr1[2] = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetAttribute("innerText");
 
-            //Сравниваем цвета и размеры цен
-            if (regularPriceColor == color && campaignPriceColor == color1 && i < j)
+            driver.FindElementByCssSelector("#box-campaigns  a:first-child").Click();
+
+            Arr2[0] = driver.FindElementByCssSelector("#box-product h1.title").GetAttribute("innerText");
+            Arr2[1] = driver.FindElementByCssSelector("#box-product s.regular-price").GetAttribute("innerText");
+            Arr2[2] = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetAttribute("innerText");
+           
+            //проверяем цвет обычной цены и то, что она зачеркнута на странице товара
+            string regularPriceColor2 = driver.FindElement(By.CssSelector("#box-product s.regular-price")).GetCssValue("color");
+            string[] regularPriceChanel2 = regularPriceColor2.Replace("rgba(", "").Replace(")", "").Split(",");
+            r = Int32.Parse(regularPriceChanel2[0].Trim());
+            g = Int32.Parse(regularPriceChanel2[1].Trim());
+            b = Int32.Parse(regularPriceChanel2[2].Trim());
+            decoration = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("text-decoration-line");
+            if (r == g && g == b && decoration == "line-through")
             {
-                driver.FindElementByCssSelector("#box-campaigns  a:first-child").Click();
-
-                color = "rgba(102, 102, 102, 1)";
-                color1 = "rgba(204, 0, 0, 1)";
-                regularPriceColor = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("color");
-                campaignPriceColor = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetCssValue("color");
-
-                Arr2[0] = driver.FindElementByCssSelector("#box-product h1.title").GetAttribute("innerText");
-                Arr2[1] = driver.FindElementByCssSelector("#box-product s.regular-price").GetAttribute("innerText");
-                Arr2[2] = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("text-decoration-line");
-                Arr2[3] = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetAttribute("innerText");
-                Arr2[4] = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetCssValue("font-weight");
-
-                regularPriceSize = driver.FindElementByCssSelector("#box-product s.regular-price").GetAttribute("offsetHeight");
-                campaignPriceSize = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetAttribute("offsetHeight");
-                i = Convert.ToInt32(regularPriceSize);
-                j = Convert.ToInt32(campaignPriceSize);
-
-                //Сравниваем свойства товара с разных страниц
-                if (regularPriceColor == color && campaignPriceColor == color1 && i < j)
+                //проверяем цвет акционной цены и то, что она выделена жирным на странице товара
+                string campaignPriceColor = driver.FindElement(By.CssSelector("#box-product strong.campaign-price")).GetCssValue("color");
+                string[] campaignPriceChanel = campaignPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+                r = Int32.Parse(campaignPriceChanel[0].Trim());
+                g = Int32.Parse(campaignPriceChanel[1].Trim());
+                b = Int32.Parse(campaignPriceChanel[2].Trim());
+                weight = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetCssValue("font-weight");
+                if (g == 0 && g == b && weight == "700")
                 {
-                    for (int k = 0; k <= 4; k++)
+                    string regularPriceSize = driver.FindElementByCssSelector("#box-product s.regular-price").GetAttribute("offsetHeight");
+                    string campaignPriceSize = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetAttribute("offsetHeight");
+                    i = Convert.ToInt32(regularPriceSize);
+                    j = Convert.ToInt32(campaignPriceSize);
+                    if (i > j)
                     {
-                        if (Arr1[k] == Arr2[k])
-                        { }
-                        Assert.Fail("Данные на траницах различаются");
+                        Assert.Fail("Цвет/Размер некорректны");
                     }
                 }
-                Assert.Fail("Цвет/Размер некорректны");
             }
+            else
             Assert.Fail("Цвет/Размер некорректны");
+
+            //Сравниваем свойства товара с разных страниц
+            for (int k = 0; k <= 2; k++)
+                {
+                    if (Arr1[k] == Arr2[k])
+                    { }
+                    else
+                    Assert.Fail("Данные на траницах различаются");
+                }
         }
 
         [TearDown]
