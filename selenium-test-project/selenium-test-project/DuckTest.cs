@@ -2,7 +2,8 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
 namespace csharp_example
@@ -10,17 +11,18 @@ namespace csharp_example
     [TestFixture]
     public class DuckTest
     {
-        public ChromeDriver driver;
+        public FirefoxDriver driver;
 
         [SetUp]
         public void Start()
         {
-            driver = new ChromeDriver();
+            driver = new FirefoxDriver();
         }
         [Test]
         public void TestDuck()
 
         {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
             driver.Url = "http://localhost/litecart/";
 
             string[] Arr1 = new string[3];
@@ -28,22 +30,26 @@ namespace csharp_example
             int i;
             int j;
             string decoration;
+            string decoration1;
             string weight;
             int r;
             int g;
             int b;
             //проверяем цвет обычной цены и то, что она зачеркнута
             string regularPriceColor = driver.FindElement(By.CssSelector("#box-campaigns s.regular-price")).GetCssValue("color");
-            string[] regularPriceChanel = regularPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+            string[] regularPriceChanel = regularPriceColor.Replace("rgba(", "").Replace("rgb(", "").Replace(")", "").Split(",");
+
             r = Int32.Parse(regularPriceChanel[0].Trim());
             g = Int32.Parse(regularPriceChanel[1].Trim());
             b = Int32.Parse(regularPriceChanel[2].Trim());
+
             decoration = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetCssValue("text-decoration-line");
-            if (r == g && g == b && decoration == "line-through")
+            decoration1 = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetCssValue("text-decoration");
+            if (r == g && g == b && decoration == "line-through" || decoration1 == "line-through")
             {
                 //проверяем цвет акционной цены и то, что она выделена жирным
                 string campaignPriceColor = driver.FindElement(By.CssSelector("#box-campaigns strong.campaign-price")).GetCssValue("color");
-                string[] campaignPriceChanel = campaignPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+                string[] campaignPriceChanel = campaignPriceColor.Replace("rgb(", "").Replace("rgba(", "").Replace(")", "").Split(",");
                 r = Int32.Parse(campaignPriceChanel[0].Trim());
                 g = Int32.Parse(campaignPriceChanel[1].Trim());
                 b = Int32.Parse(campaignPriceChanel[2].Trim());
@@ -68,24 +74,26 @@ namespace csharp_example
             Arr1[1] = driver.FindElementByCssSelector("#box-campaigns s.regular-price").GetAttribute("innerText");
             Arr1[2] = driver.FindElementByCssSelector("#box-campaigns strong.campaign-price").GetAttribute("innerText");
 
-            driver.FindElementByCssSelector("#box-campaigns  a:first-child").Click();
+            driver.FindElementByCssSelector("#box-campaigns a:first-child").Click();
 
-            Arr2[0] = driver.FindElementByCssSelector("#box-product h1.title").GetAttribute("innerText");
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("#box-product h1.title")));
+            Arr2[0] = element.GetAttribute("innerText");
             Arr2[1] = driver.FindElementByCssSelector("#box-product s.regular-price").GetAttribute("innerText");
             Arr2[2] = driver.FindElementByCssSelector("#box-product strong.campaign-price").GetAttribute("innerText");
            
             //проверяем цвет обычной цены и то, что она зачеркнута на странице товара
             string regularPriceColor2 = driver.FindElement(By.CssSelector("#box-product s.regular-price")).GetCssValue("color");
-            string[] regularPriceChanel2 = regularPriceColor2.Replace("rgba(", "").Replace(")", "").Split(",");
+            string[] regularPriceChanel2 = regularPriceColor.Replace("rgba(", "").Replace("rgb(", "").Replace(")", "").Split(",");
             r = Int32.Parse(regularPriceChanel2[0].Trim());
             g = Int32.Parse(regularPriceChanel2[1].Trim());
             b = Int32.Parse(regularPriceChanel2[2].Trim());
-            decoration = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("text-decoration-line");
-            if (r == g && g == b && decoration == "line-through")
+            decoration = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("text-decoration");
+            decoration1 = driver.FindElementByCssSelector("#box-product s.regular-price").GetCssValue("text-decoration-line");
+            if (r == g && g == b && decoration == "line-through" || decoration1 == "line-through")
             {
                 //проверяем цвет акционной цены и то, что она выделена жирным на странице товара
                 string campaignPriceColor = driver.FindElement(By.CssSelector("#box-product strong.campaign-price")).GetCssValue("color");
-                string[] campaignPriceChanel = campaignPriceColor.Replace("rgba(", "").Replace(")", "").Split(",");
+                string[] campaignPriceChanel = campaignPriceColor.Replace("rgb(", "").Replace("rgba(", "").Replace(")", "").Split(",");
                 r = Int32.Parse(campaignPriceChanel[0].Trim());
                 g = Int32.Parse(campaignPriceChanel[1].Trim());
                 b = Int32.Parse(campaignPriceChanel[2].Trim());
